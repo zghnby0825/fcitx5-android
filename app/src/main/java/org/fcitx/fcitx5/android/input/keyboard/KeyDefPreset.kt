@@ -35,7 +35,12 @@ class SymbolKey(
     shadowColor: Int? = null,
     shadowColorMonet: String? = null,
     val swipe: MacroAction? = null,
-    val swipeLabel: String? = null
+    val swipeLabel: String? = null,
+    /**
+     * When true, the swipe function always triggers by swiping up regardless of
+     * the theme's punctuation position, and the swipe label is drawn top-right.
+     */
+    val swipeUp: Boolean = false
 ) : KeyDef(
     if (swipeLabel.isNullOrEmpty()) {
         Appearance.Text(
@@ -63,7 +68,8 @@ class SymbolKey(
             backgroundColor = backgroundColor,
             backgroundColorMonet = backgroundColorMonet,
             shadowColor = shadowColor,
-            shadowColorMonet = shadowColorMonet
+            shadowColorMonet = shadowColorMonet,
+            swipeUpAltText = swipeUp
         )
     },
     buildSet {

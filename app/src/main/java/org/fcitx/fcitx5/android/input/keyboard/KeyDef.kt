@@ -122,7 +122,13 @@ open class KeyDef(
             backgroundColor: Int? = null,
             backgroundColorMonet: String? = null,
             shadowColor: Int? = null,
-            shadowColorMonet: String? = null
+            shadowColorMonet: String? = null,
+            /**
+             * When true, the swipe action always triggers by swiping up, no matter
+             * what the theme's punctuation position preference says, and the alt
+             * text is always laid out at the top-right corner.
+             */
+            val swipeUpAltText: Boolean = false
         ) : Text(
             displayText,
             textSize,

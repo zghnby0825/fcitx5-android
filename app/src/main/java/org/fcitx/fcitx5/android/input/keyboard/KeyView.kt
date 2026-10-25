@@ -517,6 +517,12 @@ class AltTextKeyView(
     horizontalGapScale: Float = 1f
 ) :
     TextKeyView(ctx, theme, def, horizontalGapScale), SwipeHintAwareKeyView {
+    /**
+     * Whether this key should always trigger its swipe action by swiping up,
+     * ignoring the theme's punctuation position preference.
+     */
+    private val swipeUpAltText = def.swipeUpAltText
+
     private enum class AltTextLayoutMode {
         TopRight,
         TopCenter,
@@ -662,6 +668,9 @@ class AltTextKeyView(
         if (altText.text.isNullOrBlank()) return AltTextLayoutMode.Hidden
         val pref = ThemeManager.prefs.punctuationPosition.getValue()
         if (pref == PunctuationPosition.None) return AltTextLayoutMode.Hidden
+        // Keys explicitly marked as "swipe up" always draw the hint at top-right,
+        // so the hint position matches the swipe direction.
+        if (swipeUpAltText) return AltTextLayoutMode.TopRight
 
         val preferred = when (pref) {
             PunctuationPosition.TopRight -> AltTextLayoutMode.TopRight
@@ -716,6 +725,8 @@ class AltTextKeyView(
 
     override fun shouldTriggerAltBySwipe(totalY: Int, fallback: SwipeSymbolDirection): Boolean {
         if (totalY == 0) return false
+        // Explicitly marked keys: always up-swipe, never down-swipe.
+        if (swipeUpAltText) return totalY < 0
         return when (lastLayoutMode ?: resolveLayoutMode(appearanceView.height)) {
             AltTextLayoutMode.Bottom -> totalY > 0
             AltTextLayoutMode.TopRight, AltTextLayoutMode.TopCenter -> totalY < 0
