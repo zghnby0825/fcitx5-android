@@ -55,7 +55,7 @@ git submodule update --init --recursive
 ./gradlew :app:assembleDebug -PbuildABI=arm64-v8a
 ```
 
-产物在 `app/build/outputs/apk/fx/debug/`（构建后会自动复制一份到 `app/build/outputs/apk/debug/`）。默认构建 `fx` 变体，但包名改成了自己的 `org.fcitx.fcitx5.android.vgh`（debug 为 `…vgh.debug`），可以和上游包/官方 fx 包并存；配套插件要用 `-PmainApplicationId=org.fcitx.fcitx5.android.vgh` 编译，插件才认这个宿主。要上游同名变体加 `-PincludeMainlineFlavor=true` 并改用 `:app:assembleMainlineDebug`。
+产物在 `app/build/outputs/apk/fx/debug/`（构建后会自动复制一份到 `app/build/outputs/apk/debug/`）。默认构建 `fx` 变体，但包名改成了自己的 `org.fcitx.fcitx5.android.vgh`（debug 为 `…vgh.debug`），桌面显示名相应为 `Fcitx5.vgh` / `小企鹅输入法.vgh`，可以和上游包/官方 fx 包并存；配套插件要用 `-PmainApplicationId=org.fcitx.fcitx5.android.vgh` 编译，插件才认这个宿主。要上游同名变体加 `-PincludeMainlineFlavor=true` 并改用 `:app:assembleMainlineDebug`。
 
 ## 许可
 
