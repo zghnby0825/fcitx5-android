@@ -11,7 +11,9 @@ plugins {
 
 val packageBase = "org.fcitx.fcitx5.android"
 val appIdBase = packageBase
-val appIdFxSuffix = ".fx"
+// our own applicationId: the app installs next to upstream/fx builds, and plugin
+// manifests are generated against org.fcitx.fcitx5.android.vgh
+val appIdFxSuffix = ".vgh"
 val flavorFx = "fx"
 val flavorMainline = "mainline"
 val appLabelDefault = "@string/app_name"
