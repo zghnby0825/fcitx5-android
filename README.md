@@ -30,6 +30,10 @@
   - `.../KeyView.kt` —— `AltTextKeyView` 固定右上布局、只认上滑；
   - `.../BaseKeyboard.kt` —— 三处 `Appearance.AltText(...)` 拷贝补字段，防止主题/颜色重算把标记丢掉。
 
+### 3. 图标去掉了 `fx` 字样
+
+`app/src/fx/res` 里的启动图标换成上游那套小企鹅（`app/src/mainline/res` 同款）：桌面显示的是干净的小企鹅，不再带 `fx` 角标；debug 变体回落到 `app/src/main/res` 的「小企鹅 + debug」图标。
+
 ## 构建
 
 Windows 实测可用的工具链：
