@@ -57,23 +57,6 @@ git submodule update --init --recursive
 
 产物在 `app/build/outputs/apk/fx/debug/`（构建后会自动复制一份到 `app/build/outputs/apk/debug/`）。默认构建 `.fx` 变体（包名 `org.fcitx.fcitx5.android.fx`）；要上游同名变体加 `-PincludeMainlineFlavor=true` 并改用 `:app:assembleMainlineDebug`。
 
-### Windows 上踩过的坑
-
-1. **路径含中文**：AGP 会直接拒绝（可加 `-Pandroid.overridePathCheck=true` 放行），但 `aidl.exe` 会把 `.d` 依赖文件按 GBK 写出来，导致 AGP 读文件抛 `MalformedInputException: Input length = 1`。解决办法是给仓库挂一个纯 ASCII 的 junction（`mklink /J D:\build\fcitx5-android <仓库路径>`），从 junction 目录构建。
-2. **ECM**：`lib/fcitx5/src/main/cpp/cmake/FindECM.cmake` 在 Windows 上默认找 `C:/msys64/ucrt64/share/ECM/cmake`，没有 msys2 就设置 `ECM_DIR`。
-3. **Gettext**：`fcitx5/CMakeLists.txt` 里是 `find_package(Gettext REQUIRED)`，每次构建都要跑 `.po → .mo`，绕不过；装 gettext 并把 `bin` 加进 PATH。
-4. **TLS 拦截**：本机装了 Steam++（Watt Toolkit），它会 MITM `github.com` 并替换证书，JDK 默认的 `cacerts` 不认，于是 Gradle wrapper 下载时报 `PKIX path building failed`。给 JVM 加 `-Djavax.net.ssl.trustStoreType=WINDOWS-ROOT`（写进 `~/.gradle/gradle.properties`）走 Windows 根证书库即可。
-
-## 关于插件（rime 等）
-
-插件不是打进主 APK 的，每个都是独立 APK（module `plugin/*`），发版时与主程序放在同一个 release 里。宿主加载插件的三个条件：
-
-- 与宿主**同一签名**（`DataManager` 会比对签名，不一致只能开「兼容模式」白名单）；
-- `res/xml/plugin.xml` 的 `apiVersion` 必须等于宿主的 `PluginDescriptor.pluginAPI`（目前是 `0.1`）；
-- 用同一份 `lib/common` / `lib/plugin-base` 编译；插件自带 `assets/usr` 与 `descriptor.json`，由宿主在启动时同步到应用数据目录。
-
-`plugin/rime` 尤其轻：没有 Kotlin 业务代码，只有 librime 原生库、rime 数据（`rime-prelude` / `rime-essay` / `rime-luna-pinyin` / `rime-stroke`）和 `plugin.xml`，所以「随版本发布」纯粹是打包问题，不需要针对宿主版本改代码。
-
 ## 许可
 
 LGPL-2.1-or-later，遵循上游。本仓库的改动部分同样以 LGPL-2.1-or-later 发布。
