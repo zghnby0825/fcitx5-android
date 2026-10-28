@@ -43,6 +43,14 @@
 
 ⚠️ 关于版本检查：`UpdateRepository.isNewerVersion` 只提取 `x.y.z` 三段数字（`v0.1.3-vgh.2` 里 `-vgh.2` 被忽略），所以将来发新版时**要动数字段**（例如 `0.1.4-vgh.1`），只把 `vgh.2` 改成 `vgh.3` 不会被判断成「有新版本」。
 
+### 5. 关掉了「自动保存时顺带做 Rime 同步」
+
+`plugin/rime/src/main/cpp/fcitx5-rime/src/rimeengine.cpp` 的 `RimeEngine::sync()`：只有在用户主动点「同步」时才调用 `rime_api->sync_user_data()`；应用退出 / 关机时的自动 `save()` 只释放会话（把词库落盘），不再顺带同步。
+
+原因：librime 同步前会先把 `*.yaml` / `*.txt` 备份进 `data/rime/sync/<installation_id>/`，在 Android 上这一步经常失败，日志里每保存一次就刷一条 `E rime.fcitx-rime: error backing up file .../user.yaml`，而那份备份对单机使用没有任何意义。
+
+改动已经存成补丁 `plugin/rime/patches/0001-rime-sync-only-when-user-triggered.patch`（`fcitx5-rime` 是上游子模块，我们没往上游提交）：`git submodule update --init --recursive` 之后在仓库根目录执行 `git -C plugin/rime/src/main/cpp/fcitx5-rime apply "$PWD/plugin/rime/patches/0001-rime-sync-only-when-user-triggered.patch"` 即可复现。
+
 ## 构建
 
 Windows 实测可用的工具链：

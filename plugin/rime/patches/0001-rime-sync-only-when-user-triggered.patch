@@ -1,0 +1,26 @@
+diff --git a/src/rimeengine.cpp b/src/rimeengine.cpp
+index cdaaa3d..61edc30 100644
+--- a/src/rimeengine.cpp
++++ b/src/rimeengine.cpp
+@@ -630,11 +630,18 @@ void RimeEngine::deploy() {
+ }
+ 
+ void RimeEngine::sync(bool userTriggered) {
+-    RIME_DEBUG() << "Rime Sync user data";
++    RIME_DEBUG() << "Rime Sync user data, userTriggered: " << userTriggered;
+     releaseAllSession(true);
+-    if (userTriggered) {
+-        allowNotification();
++    if (!userTriggered) {
++        // Automatic saves (app being stopped, device shutting down...) only need
++        // the pending user dict changes to be flushed, which releasing the
++        // sessions already does. Running sync_user_data() here makes librime
++        // back up every config file into the sync directory before syncing, and
++        // on Android that backup keeps failing with
++        // "error backing up file ..." on every save.
++        return;
+     }
++    allowNotification();
+     api_->sync_user_data();
+ }
+ 
