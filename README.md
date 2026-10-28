@@ -34,6 +34,15 @@
 
 `app/src/fx/res` 里的启动图标换成上游那套小企鹅（`app/src/mainline/res` 同款）：桌面显示的是干净的小企鹅，不再带 `fx` 角标；debug 变体回落到 `app/src/main/res` 的「小企鹅 + debug」图标。
 
+### 4. 关于页去掉了上游痕迹
+
+`app/src/main/java/org/fcitx/fcitx5/android/utils/Const.kt`：
+
+- `githubRepo` 改成本仓库 `zghnby0825/fcitx5-android` —— 「源代码」跳转、「构建哈希」跳转、以及版本检查（`UpdateRepository` 请求的 GitHub API）全部跟着改，关于页不会再冒出上游 nightly 的「新版本」；
+- `versionName` 去掉 `-release` / `-debug` 后缀，只显示 `BuildConfig.VERSION_NAME`，也就是 `0.1.3-vgh.x` 这样的自己的版本号。
+
+⚠️ 关于版本检查：`UpdateRepository.isNewerVersion` 只提取 `x.y.z` 三段数字（`v0.1.3-vgh.2` 里 `-vgh.2` 被忽略），所以将来发新版时**要动数字段**（例如 `0.1.4-vgh.1`），只把 `vgh.2` 改成 `vgh.3` 不会被判断成「有新版本」。
+
 ## 构建
 
 Windows 实测可用的工具链：
